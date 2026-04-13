@@ -1,0 +1,47 @@
+# ── Gradle ────────────────────────────────────────────────────────────────────
+.gradle/
+**/build/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+node_modules/
+
+# ── Java ──────────────────────────────────────────────────────────────────────
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+out/
+
+# ── IntelliJ IDEA ─────────────────────────────────────────────────────────────
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+logs/
+*.log
+*.log.*
+
+# ── OS / editor junk ──────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.swp
+*.swo
+*~
+
+# ── Helper documents ──────────────────────────────────────────────────────────
+.guidance/
+
+# ── Claude artifacts ──────────────────────────────────────────────────────────
+.claude/
+
+# ── Codex artifacts ──────────────────────────────────────────────────────────
+AGENTS.md

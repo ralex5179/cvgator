@@ -1,0 +1,19 @@
+plugins {
+    id 'base'
+}
+
+tasks.named('build') {
+    dependsOn ':apps:api:build'
+}
+
+tasks.named('check') {
+    dependsOn ':apps:api:check'
+}
+
+tasks.register('spotlessCheck') {
+    dependsOn ':apps:api:spotlessCheck'
+}
+
+tasks.register('spotlessApply') {
+    dependsOn ':apps:api:spotlessApply'
+}
