@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{personal.fullName}} - CV</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="cv-document">
+      <header class="cv-header">
+        <div class="identity-block">
+          <h1>{{personal.fullName}}</h1>
+          <p class="headline">{{personal.title}}</p>
+        </div>
+
+        <div class="contact-block">
+          <p>{{personal.email}}</p>
+          <p>{{personal.phone}}</p>
+          <p>{{personal.location}}</p>
+        </div>
+      </header>
+
+      {{#personal.summary}}
+      <section class="cv-section">
+        <h2>Professional Summary</h2>
+        <p class="summary-text">{{personal.summary}}</p>
+      </section>
+      {{/personal.summary}}
+
+      <section class="cv-section">
+        <h2>Experience</h2>
+        <div class="section-content">
+          {{#experience}}
+          <article class="entry">
+            <div class="entry-heading">
+              <div>
+                <h3>{{role}}</h3>
+                <p class="entry-subheading">{{company}}</p>
+              </div>
+              <div class="entry-meta">
+                <p>{{startDate}} - {{endDate}}</p>
+                <p>{{location}}</p>
+              </div>
+            </div>
+
+            <ul class="highlight-list">
+              {{#highlights}}
+              <li>{{.}}</li>
+              {{/highlights}}
+            </ul>
+          </article>
+          {{/experience}}
+        </div>
+      </section>
+
+      <section class="cv-section">
+        <h2>Education</h2>
+        <div class="section-content">
+          {{#education}}
+          <article class="entry">
+            <div class="entry-heading">
+              <div>
+                <h3>{{degree}}</h3>
+                <p class="entry-subheading">{{institution}}</p>
+              </div>
+              <div class="entry-meta">
+                <p>{{startDate}} - {{endDate}}</p>
+                <p>{{location}}</p>
+              </div>
+            </div>
+          </article>
+          {{/education}}
+        </div>
+      </section>
+
+      <section class="cv-section">
+        <h2>Skills</h2>
+        <ul class="skill-list">
+          {{#skills}}
+          <li>{{name}}</li>
+          {{/skills}}
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>
