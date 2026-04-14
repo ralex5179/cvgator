@@ -22,6 +22,10 @@ public class TemplateRenderService {
     private final TemplateRenderer templateRenderer;
 
     public String renderPreview(CvPreviewRequest request) {
+        return renderHtml(request);
+    }
+
+    public String renderHtml(CvPreviewRequest request) {
         TemplateDefinition templateDefinition = templateCatalogService.resolveTemplate(request.getTemplateId());
         Map<String, Object> model = objectMapper.convertValue(request, MAP_TYPE);
         String body = templateRenderer.render(templateDefinition.getTemplateHtml(), model);

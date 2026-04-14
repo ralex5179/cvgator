@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -111,6 +112,75 @@ class CvPreviewControllerIT {
     }
 
     @Test
+    void pdfReturnsGeneratedPdf() throws Exception {
+        HttpResponse<byte[]> response = postJsonForBytes("/api/cv/pdf", """
+                {
+                  "templateId": "default",
+                  "personal": {
+                    "fullName": "Jane Doe",
+                    "title": "Senior Software Engineer",
+                    "email": "jane@example.com",
+                    "phone": "+33 6 00 00 00 00",
+                    "location": "Paris, France",
+                    "summary": "Builds reliable backend systems."
+                  },
+                  "experience": [
+                    {
+                      "role": "Platform Engineer",
+                      "company": "Acme",
+                      "location": "Paris, France",
+                      "startDate": "2022",
+                      "endDate": "Present",
+                      "highlights": ["Led API delivery", "Improved deployment safety"]
+                    }
+                  ],
+                  "education": [
+                    {
+                      "degree": "MSc Computer Science",
+                      "institution": "Example University",
+                      "location": "Lyon, France",
+                      "startDate": "2018",
+                      "endDate": "2020"
+                    }
+                  ],
+                  "skills": [
+                    { "name": "Java" },
+                    { "name": "Spring Boot" }
+                  ]
+                }
+                """);
+
+        assertThat(response.statusCode()).isEqualTo(200);
+        assertThat(response.headers().firstValue("content-type"))
+                .hasValueSatisfying(value -> assertThat(value).contains("application/pdf"));
+        assertThat(response.headers().firstValue("content-disposition"))
+                .hasValue("attachment; filename=\"cvgator-cv.pdf\"");
+        assertThat(response.body()).isNotEmpty();
+        assertThat(new String(response.body(), 0, 4, StandardCharsets.US_ASCII)).isEqualTo("%PDF");
+    }
+
+    @Test
+    void pdfRejectsUnknownTemplateId() throws Exception {
+        HttpResponse<byte[]> response = postJsonForBytes("/api/cv/pdf", """
+                {
+                  "templateId": "missing",
+                  "personal": {
+                    "fullName": "Jane Doe",
+                    "title": "Engineer",
+                    "email": "jane@example.com",
+                    "phone": "+33 6 00 00 00 00",
+                    "location": "Paris, France"
+                  },
+                  "experience": [],
+                  "education": [],
+                  "skills": []
+                }
+                """);
+
+        assertThat(response.statusCode()).isEqualTo(404);
+    }
+
+    @Test
     void listsRegisteredTemplatesForFrontend() throws Exception {
         HttpResponse<String> response = get("/api/templates");
 
@@ -128,11 +198,20 @@ class CvPreviewControllerIT {
     }
 
     private HttpResponse<String> postJson(String path, String body) throws IOException, InterruptedException {
+        return postJson(path, body, HttpResponse.BodyHandlers.ofString());
+    }
+
+    private HttpResponse<byte[]> postJsonForBytes(String path, String body) throws IOException, InterruptedException {
+        return postJson(path, body, HttpResponse.BodyHandlers.ofByteArray());
+    }
+
+    private <T> HttpResponse<T> postJson(String path, String body, HttpResponse.BodyHandler<T> bodyHandler)
+            throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder(URI.create("http://localhost:" + port + path))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();
 
-        return HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        return HttpClient.newHttpClient().send(request, bodyHandler);
     }
 }

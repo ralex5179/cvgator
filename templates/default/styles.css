@@ -1,3 +1,8 @@
+@page {
+  size: A4;
+  margin: 16mm;
+}
+
 :root {
   color: #1b2430;
   background: #f5f3ee;
@@ -16,7 +21,8 @@ body {
 }
 
 .cv-document {
-  width: min(960px, 100%);
+  width: 100%;
+  max-width: 960px;
   margin: 0 auto;
   padding: 3rem;
   background: #ffffff;
@@ -81,6 +87,7 @@ body {
 
 .entry {
   break-inside: avoid;
+  page-break-inside: avoid;
 }
 
 .entry-heading {
